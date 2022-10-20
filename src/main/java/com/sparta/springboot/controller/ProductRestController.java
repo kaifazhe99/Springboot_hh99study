@@ -3,6 +3,7 @@ package com.sparta.springboot.controller;
 import com.sparta.springboot.dto.ProductMypriceRequestDto;
 import com.sparta.springboot.dto.ProductRequestDto;
 import com.sparta.springboot.entity.Product;
+import com.sparta.springboot.entity.User;
 import com.sparta.springboot.model.UserRoleEnum;
 import com.sparta.springboot.security.UserDetailsImpl;
 import com.sparta.springboot.service.ProductService;
@@ -76,5 +77,17 @@ public class ProductRestController {
     ) {
         page = page -1;
         return productService.getAllProducts(page, size, sortBy, isAsc);
+    }
+
+    // 상품에 폴더 추가
+    @PostMapping("/api/products/{productId}/folder")
+    public Long addFolder(
+            @PathVariable Long productId,
+            @RequestParam Long folderId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        User user = userDetails.getUser();
+        Product product = productService.addFolder(productId, folderId, user);
+        return product.getId();
     }
 }
